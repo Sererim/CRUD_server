@@ -39,6 +39,15 @@
             <version>2.11.0</version>
             <scope>compile</scope>
         </dependency>
+
+        <!--  PostgresSQL: SQL database driver for JDBC -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.2</version> <!-- Use the latest version -->
+        </dependency>
+
+
     </dependencies>
 
     <build>

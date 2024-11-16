@@ -1,7 +1,5 @@
 package org.example.DB;
 
-import java.util.List;
-
 final public class AuthObject {
   final private String url;
   final private String username;
@@ -13,8 +11,18 @@ final public class AuthObject {
     this.password = password;
   }
 
-  List<String> getAuth() {
-    return List.of(url, username, password);
+  // Package visable getters.
+
+  String getUrl() {
+    return this.url;
+  }
+
+  String getUsername() {
+    return this.username;
+  }
+
+  String getPassword() {
+    return this.password;
   }
 
 }

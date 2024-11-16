@@ -2,12 +2,13 @@ package org.example;
 
 
 import org.example.DB.AuthObject;
+import org.example.DB.DatabaseManager;
 import org.example.Timbering.Timberland;
 import org.example.Utils.DatabaseAuth;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Optional;
+import java.sql.SQLException;
 
 public class Main {
 
@@ -64,6 +65,18 @@ public class Main {
       // early return
       return;
     }
-    System.out.println(auth.toString());
+
+    Timberland.cutInfo(TAG, "Successfully loaded the config file for the database." +
+        "\nEstablishing the connection...");
+
+    // Connect to the database.
+    DatabaseManager databaseManager = null;
+    try {
+      databaseManager = new DatabaseManager(auth);
+    } catch (SQLException sqle) {
+      Timberland.cutException(TAG, "Couldn't connect to the database!", sqle);
+      return;
+    }
+    System.out.println("DONE!");
   }
 }

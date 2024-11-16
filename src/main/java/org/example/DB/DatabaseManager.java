@@ -1,6 +1,8 @@
 package org.example.DB;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 
 /**
@@ -8,9 +10,14 @@ import java.sql.*;
  */
 public class DatabaseManager {
 
-  
-  public DatabaseManager() {
+  private final Connection connection;
 
+  public DatabaseManager(AuthObject auth) throws SQLException {
+    connection = DriverManager.getConnection(
+        auth.getUrl(),
+        auth.getUsername(),
+        auth.getPassword()
+    );
   }
 
 }

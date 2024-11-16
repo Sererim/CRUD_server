@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Optional;
+
 
 /**
  * Utility class for handling db config file.

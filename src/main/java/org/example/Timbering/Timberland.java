@@ -11,7 +11,6 @@ import java.util.logging.*;
 public final class Timberland {
 
   private static final Logger timber          = Logger.getLogger(Timberland.class.getName());
-  private static final ConsoleHandler console = new ConsoleHandler();
   private static final Date date              = new Date();
 
   /**
@@ -22,6 +21,7 @@ public final class Timberland {
    */
   public static void setTimber(Boolean logToFile) throws IOException, SecurityException {
     ConsoleHandler consoleHandler = new ConsoleHandler();
+    consoleHandler.setFormatter(new ColorFormatter());
     timber.addHandler(consoleHandler);
 
     if (logToFile) {
@@ -29,6 +29,8 @@ public final class Timberland {
       logFile.setFormatter(new SimpleFormatter());
       timber.addHandler(logFile);
     }
+    timber.setLevel(Level.ALL);
+    timber.setUseParentHandlers(false);
   }
 
   /**
@@ -65,5 +67,4 @@ public final class Timberland {
   private static String getMessage(String tag, String message) {
     return String.join("\n", tag, date.toString(), message);
   }
-
 }
