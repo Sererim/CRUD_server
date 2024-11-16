@@ -1,5 +1,8 @@
 package org.example.DB;
 
+/**
+ * Auth class for getting database credentials from json file.
+ */
 final public class AuthObject {
   final private String url;
   final private String username;
@@ -11,7 +14,7 @@ final public class AuthObject {
     this.password = password;
   }
 
-  // Package visable getters.
+  // Package visible getters.
 
   String getUrl() {
     return this.url;

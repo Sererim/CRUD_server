@@ -29,7 +29,7 @@ public class Main {
             "First argument is file name for credentials .json file for database that is used by the server",
             "Second argument is for logging, pass in Y/y if you want the server to write it logs to a file."
         ));
-        // early return
+        // Early return.
         return;
       } else {
         switch (args.length) {
@@ -62,7 +62,7 @@ public class Main {
               "Connection to a database is required to run the program. Not allowed program state",
           "Either file name is incorrect or json schema is wrong."
       );
-      // early return
+      // Early return.
       return;
     }
 
@@ -75,6 +75,7 @@ public class Main {
       databaseManager = new DatabaseManager(auth);
     } catch (SQLException sqle) {
       Timberland.cutException(TAG, "Couldn't connect to the database!", sqle);
+      // Early return.
       return;
     }
     System.out.println("DONE!");

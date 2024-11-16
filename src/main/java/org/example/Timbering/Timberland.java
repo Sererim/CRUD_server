@@ -36,8 +36,8 @@ public final class Timberland {
   /**
    * Method for info level logging
    *
-   * @param tag     - that is used to identify the class
-   * @param message - to be shown in commandline
+   * @param tag      that is used to identify the class
+   * @param message  to be shown in commandline
    */
   public static void cutInfo(String tag, String message) {
     timber.log(Level.INFO, getMessage(tag, message));
@@ -45,8 +45,8 @@ public final class Timberland {
 
   /**
    * Method for exception level logging.
-   * @param tag     - that is used to identify the class
-   * @param message - to be shown in commandline
+   * @param tag      that is used to identify the class
+   * @param message  to be shown in commandline
    */
   public static void cutException(String tag, String message, Exception exception) {
     timber.log(Level.WARNING, getMessage(tag, message), exception);
@@ -54,9 +54,9 @@ public final class Timberland {
 
   /**
    * Method for I AM DEAD state
-   * @param tag     - that is used to identify the class
-   * @param message - to be shown in commandline
-   * @param reason  - state of the program before <strong>DYING</strong>.
+   * @param tag      that is used to identify the class
+   * @param message  to be shown in commandline
+   * @param reason   state of the program before <strong>DYING</strong>.
    */
   public static void cutDEAD(String tag, String message, String reason) {
     timber.log(Level.SEVERE, getMessage(tag, message) + "\n\n" + reason);

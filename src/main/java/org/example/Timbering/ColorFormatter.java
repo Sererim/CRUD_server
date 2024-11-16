@@ -4,6 +4,10 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+/**
+ * Color formatter for Timberland
+ * @see Timberland
+ */
 public class ColorFormatter extends Formatter {
 
   // Reset
@@ -13,8 +17,6 @@ public class ColorFormatter extends Formatter {
   private static final String RED = "\u001B[31m";
   private static final String GREEN = "\u001B[32m";
   private static final String YELLOW = "\u001B[33m";
-
-
 
   @Override
   public String format(LogRecord record) {
