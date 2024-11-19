@@ -1,4 +1,4 @@
-package org.example.Timbering;
+package org.example.timbering;
 
 import java.io.IOException;
 import java.util.Date;
@@ -31,6 +31,7 @@ public final class Timberland {
     }
     timber.setLevel(Level.ALL);
     timber.setUseParentHandlers(false);
+    initTimberOutline();
   }
 
   /**
@@ -49,7 +50,7 @@ public final class Timberland {
    * @param message  to be shown in commandline
    */
   public static void cutException(String tag, String message, Exception exception) {
-    timber.log(Level.WARNING, getMessage(tag, message), exception);
+    timber.log(Level.WARNING, getMessage(tag, message) + "\n" + exception.getMessage(), exception);
   }
 
   /**
@@ -66,5 +67,9 @@ public final class Timberland {
 
   private static String getMessage(String tag, String message) {
     return String.join("\n", tag, date.toString(), message);
+  }
+
+  private static void initTimberOutline() {
+    timber.log(Level.SEVERE, "--------------------------------------------------------------------------------");
   }
 }

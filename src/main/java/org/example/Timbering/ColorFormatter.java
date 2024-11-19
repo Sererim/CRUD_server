@@ -1,4 +1,4 @@
-package org.example.Timbering;
+package org.example.timbering;
 
 import java.util.logging.Formatter;
 import java.util.logging.Level;

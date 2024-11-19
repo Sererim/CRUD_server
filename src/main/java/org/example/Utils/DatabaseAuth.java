@@ -1,11 +1,11 @@
-package org.example.Utils;
+package org.example.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
-import org.example.DB.AuthObject;
-import org.example.Timbering.Timberland;
+import org.example.db.AuthObject;
+import org.example.timbering.Timberland;
 
 import java.io.FileReader;
 import java.io.IOException;

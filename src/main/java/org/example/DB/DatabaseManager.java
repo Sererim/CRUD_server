@@ -1,13 +1,11 @@
-package org.example.DB;
+package org.example.db;
 
-import org.example.Timbering.Timberland;
+import org.example.timbering.Timberland;
 
 import java.sql.*;
+import java.util.List;
 
 
-/**
- * Class for work with SQL (Postgres) database.
- */
 public class DatabaseManager {
 
   private static final String TAG = "DatabaseManager";
@@ -16,13 +14,130 @@ public class DatabaseManager {
 
   public DatabaseManager(AuthObject auth) throws SQLException {
     connection = DriverManager.getConnection(auth.getUrl(), auth.getUsername(), auth.getPassword());
+    setUpTables();
   }
 
   /**
    * Method that creates the required tables in the database.
    */
   private void setUpTables() {
-    // TODO finish this method.
+    Timberland.cutInfo(TAG, "Setting up tables...");
+    setUpGovernmentTable();
+    setUpEnumForPilot();
+    setUpPilotTable();
+    setUpMachineTable();
+    setUpPilotToMachineTable();
+  }
+
+  /**
+   * Method to set up a user table in the database.
+   */
+  private void setUpPilotTable() {
+
+    Timberland.cutInfo(TAG, "Setting up a pilot table.");
+
+    String statement = "CREATE TABLE IF NOT EXISTS pilots (" +
+        "id SERIAL PRIMARY KEY," +
+        "name VARCHAR(75)," +
+        "sex gender," +
+        "nationality VARCHAR(50)," +
+        "government_id INTEGER," +
+        "FOREIGN KEY (government_id) REFERENCES governments(id)" +
+        ")";
+
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(statement);
+      if (!preparedStatement.execute()) {
+        Timberland.cutInfo(TAG, "Successfully created the user table");
+      }
+    } catch (SQLException sqle) {
+      Timberland.cutException(TAG, "Couldn't process the statement\n" + statement, sqle);
+    }
+  }
+
+  /**
+   * Pilot needs a single enum for gender.
+   */
+  private void setUpEnumForPilot() {
+    Timberland.cutInfo(TAG, "Setting up ENUMS for pilots");
+
+    try {
+      connection.prepareStatement("CREATE TYPE gender AS ENUM ('M', 'F');").execute();
+    } catch (SQLException sqle) {
+      Timberland.cutException(TAG, "Couldn't process the statement or Enum already exists", sqle);
+    }
+  }
+
+  /**
+   * Set up governments table.
+   */
+  private void setUpGovernmentTable() {
+    Timberland.cutInfo(TAG, "Setting up a governments table.");
+
+    String statement = "CREATE TABLE IF NOT EXISTS governments (" +
+        "id SERIAL PRIMARY KEY," +
+        "name VARCHAR(50)," +
+        "acronym VARCHAR(10)," +
+        "capital VARCHAR(20)" +
+        ");";
+
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(statement);
+      if (!preparedStatement.execute()) {
+        Timberland.cutInfo(TAG, "Successfully created the governments table");
+      }
+    } catch (SQLException sqle) {
+      Timberland.cutException(TAG, "Couldn't process the statement\n" + statement, sqle);
+    }
+  }
+
+  private void setUpMachineTable() {
+    Timberland.cutInfo(TAG, "Setting up a machines table.");
+
+    String statement = "CREATE TABLE IF NOT EXISTS machines (" +
+        "id SERIAL PRIMARY KEY," +
+        "name VARCHAR(50)," +
+        "series VARCHAR(20)," +
+        "head_height NUMERIC(4, 2)," +
+        "max_weight NUMERIC(4, 2)," +
+        "empty_weight NUMERIC(4, 2)," +
+        "power_source TEXT," +
+        "power_output SMALLINT," +
+        "max_acceleration NUMERIC(4,2)," +
+        "max_speed INTEGER," +
+        "government_id INTEGER," +
+        "FOREIGN KEY (government_id) REFERENCES governments(id)" +
+        ")";
+
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(statement);
+      if (!preparedStatement.execute()) {
+        Timberland.cutInfo(TAG, "Successfully created the machines table");
+      }
+    } catch (SQLException sqle) {
+      Timberland.cutException(TAG, "Couldn't process the statement\n" + statement, sqle);
+    }
+  }
+
+  private void setUpPilotToMachineTable() {
+    Timberland.cutInfo(TAG, "Setting up a machines_pilots table.");
+
+    String statement = "CREATE TABLE IF NOT EXISTS machines_pilots (" +
+        "machine_id INTEGER NOT NULL," +
+        "pilot_id INTEGER NOT NULL," +
+        "PRIMARY KEY (machine_id, pilot_id)," +
+        "FOREIGN KEY (machine_id) REFERENCES machines(id)," +
+        "FOREIGN KEY (pilot_id) REFERENCES pilots(id)" +
+        ");";
+
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(statement);
+      if (!preparedStatement.execute()) {
+        Timberland.cutInfo(TAG, "Successfully created the machines_pilots table");
+      }
+    } catch (SQLException sqle) {
+      Timberland.cutException(TAG, "Couldn't process the statement\n" + statement, sqle);
+    }
   }
 
 
@@ -54,7 +169,8 @@ public class DatabaseManager {
 
   /**
    * Read from the table with a where clause.
-   * @param table correct table name
+   *
+   * @param table  correct table name
    * @param clause valid WHERE clause
    *               Example "id = 1"
    * @return ResultSet may be null
@@ -80,6 +196,9 @@ public class DatabaseManager {
     return result;
   }
 
-  //TODO add C U and D methods for your database.
+  void writeToTable(String table, Entity entity) {
+    List<String> data = entity.getDataToDatabase();
+  }
+
 
 }

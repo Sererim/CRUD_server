@@ -1,4 +1,4 @@
-package org.example.DB;
+package org.example.db;
 
 /**
  * Auth class for getting database credentials from json file.

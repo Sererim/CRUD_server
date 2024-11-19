@@ -1,12 +1,14 @@
 package org.example;
 
 
-import org.example.DB.AuthObject;
-import org.example.DB.DatabaseManager;
-import org.example.Timbering.Timberland;
-import org.example.Utils.DatabaseAuth;
+import com.sun.net.httpserver.HttpServer;
+import org.example.db.AuthObject;
+import org.example.db.DatabaseManager;
+import org.example.timbering.Timberland;
+import org.example.utils.DatabaseAuth;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.file.Path;
 import java.sql.SQLException;
 
@@ -78,6 +80,29 @@ public class Main {
       // Early return.
       return;
     }
+
+    // databaseManager != null !
+    // Start the server.
+    HttpServer server = null;
+    try {
+      server = HttpServer.create(new InetSocketAddress(8085), 0);
+    } catch (IOException ioe) {
+      Timberland.cutException(TAG, "Couldn't initialise an http server!", ioe);
+    }
+    if (server == null) {
+      Timberland.cutDEAD(
+          TAG,
+          "Problems with starting a server!",
+          "It is possible that program doesn't have a permission or port is already being used"
+      );
+      return;
+    }
+
+    server.createContext("/pilot");
+    server.createContext("/machine");
+    server.createContext("/government");
+    server.createContext("/machine_to_pilot");
+
     System.out.println("DONE!");
   }
 }
