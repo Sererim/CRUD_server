@@ -1,13 +1,23 @@
 package org.example.db;
 
+import org.example.db.dao.DAO;
 import org.example.timbering.Timberland;
 
 import java.sql.*;
 import java.util.List;
 
 
+/**
+ * Database manager class.
+ * <br></br>
+ * Used for all interactions with the database (Postgres).
+ * <br></br>
+ * Direct methods that access the database are package private use -> Database worker for working with db.
+ * @see DatabaseWorker
+ */
 public class DatabaseManager {
 
+  // Tag for Timberland
   private static final String TAG = "DatabaseManager";
 
   private final Connection connection;
@@ -20,10 +30,9 @@ public class DatabaseManager {
   /**
    * Method that creates the required tables in the database.
    */
-  private void setUpTables() {
+  public void setUpTables() throws SQLException {
     Timberland.cutInfo(TAG, "Setting up tables...");
     setUpGovernmentTable();
-    setUpEnumForPilot();
     setUpPilotTable();
     setUpMachineTable();
     setUpPilotToMachineTable();
@@ -32,46 +41,27 @@ public class DatabaseManager {
   /**
    * Method to set up a user table in the database.
    */
-  private void setUpPilotTable() {
+  private void setUpPilotTable() throws SQLException {
 
     Timberland.cutInfo(TAG, "Setting up a pilot table.");
 
     String statement = "CREATE TABLE IF NOT EXISTS pilots (" +
         "id SERIAL PRIMARY KEY," +
         "name VARCHAR(75)," +
-        "sex gender," +
+        "sex VARCHAR(1)," +
         "nationality VARCHAR(50)," +
         "government_id INTEGER," +
         "FOREIGN KEY (government_id) REFERENCES governments(id)" +
         ")";
 
-    try {
-      PreparedStatement preparedStatement = connection.prepareStatement(statement);
-      if (!preparedStatement.execute()) {
-        Timberland.cutInfo(TAG, "Successfully created the user table");
-      }
-    } catch (SQLException sqle) {
-      Timberland.cutException(TAG, "Couldn't process the statement\n" + statement, sqle);
-    }
+    exec(statement);
   }
 
-  /**
-   * Pilot needs a single enum for gender.
-   */
-  private void setUpEnumForPilot() {
-    Timberland.cutInfo(TAG, "Setting up ENUMS for pilots");
-
-    try {
-      connection.prepareStatement("CREATE TYPE gender AS ENUM ('M', 'F');").execute();
-    } catch (SQLException sqle) {
-      Timberland.cutException(TAG, "Couldn't process the statement or Enum already exists", sqle);
-    }
-  }
 
   /**
    * Set up governments table.
    */
-  private void setUpGovernmentTable() {
+  private void setUpGovernmentTable() throws SQLException {
     Timberland.cutInfo(TAG, "Setting up a governments table.");
 
     String statement = "CREATE TABLE IF NOT EXISTS governments (" +
@@ -81,17 +71,10 @@ public class DatabaseManager {
         "capital VARCHAR(20)" +
         ");";
 
-    try {
-      PreparedStatement preparedStatement = connection.prepareStatement(statement);
-      if (!preparedStatement.execute()) {
-        Timberland.cutInfo(TAG, "Successfully created the governments table");
-      }
-    } catch (SQLException sqle) {
-      Timberland.cutException(TAG, "Couldn't process the statement\n" + statement, sqle);
-    }
+    exec(statement);
   }
 
-  private void setUpMachineTable() {
+  private void setUpMachineTable() throws SQLException {
     Timberland.cutInfo(TAG, "Setting up a machines table.");
 
     String statement = "CREATE TABLE IF NOT EXISTS machines (" +
@@ -100,26 +83,17 @@ public class DatabaseManager {
         "series VARCHAR(20)," +
         "head_height NUMERIC(4, 2)," +
         "max_weight NUMERIC(4, 2)," +
-        "empty_weight NUMERIC(4, 2)," +
         "power_source TEXT," +
         "power_output SMALLINT," +
         "max_acceleration NUMERIC(4,2)," +
-        "max_speed INTEGER," +
         "government_id INTEGER," +
         "FOREIGN KEY (government_id) REFERENCES governments(id)" +
         ")";
 
-    try {
-      PreparedStatement preparedStatement = connection.prepareStatement(statement);
-      if (!preparedStatement.execute()) {
-        Timberland.cutInfo(TAG, "Successfully created the machines table");
-      }
-    } catch (SQLException sqle) {
-      Timberland.cutException(TAG, "Couldn't process the statement\n" + statement, sqle);
-    }
+    exec(statement);
   }
 
-  private void setUpPilotToMachineTable() {
+  private void setUpPilotToMachineTable() throws SQLException {
     Timberland.cutInfo(TAG, "Setting up a machines_pilots table.");
 
     String statement = "CREATE TABLE IF NOT EXISTS machines_pilots (" +
@@ -130,14 +104,7 @@ public class DatabaseManager {
         "FOREIGN KEY (pilot_id) REFERENCES pilots(id)" +
         ");";
 
-    try {
-      PreparedStatement preparedStatement = connection.prepareStatement(statement);
-      if (!preparedStatement.execute()) {
-        Timberland.cutInfo(TAG, "Successfully created the machines_pilots table");
-      }
-    } catch (SQLException sqle) {
-      Timberland.cutException(TAG, "Couldn't process the statement\n" + statement, sqle);
-    }
+    exec(statement);
   }
 
 
@@ -148,23 +115,10 @@ public class DatabaseManager {
    * @param table correct table name
    * @return ResultSet <strong>may be null</strong>
    */
-  ResultSet readAllFrom(String table) {
+  public ResultSet readAllFrom(String table) throws SQLException {
     Timberland.cutInfo(TAG, "Reading everything from " + table);
     String statement = "SELECT * FROM " + table + ";";
-    ResultSet result = null;
-
-    try {
-      PreparedStatement preparedStatement = connection.prepareStatement(statement);
-
-      Timberland.cutInfo(TAG, "Executing the statement " + statement);
-      result = preparedStatement.executeQuery();
-
-      Timberland.cutInfo(TAG, "Got a ResultSet\n" + result);
-
-    } catch (SQLException sqle) {
-      Timberland.cutException(TAG, "Failed to read from " + table, sqle);
-    }
-    return result;
+    return execWithResult(statement);
   }
 
   /**
@@ -175,30 +129,164 @@ public class DatabaseManager {
    *               Example "id = 1"
    * @return ResultSet may be null
    */
-  ResultSet readFromWhere(String table, String clause) {
+  ResultSet readFromWhere(String table, String clause) throws SQLException {
     Timberland.cutInfo(TAG, "Reading from " + table + " where " + clause);
     String statement = "SELECT * FROM " + table + " WHERE " + clause;
-    ResultSet result = null;
+    return execWithResult(statement);
+  }
 
-    try {
-      PreparedStatement preparedStatement = connection.prepareStatement(statement);
+  /**
+   * Write to table function.
+   * We can add values without specifying column names, if amount of values is equal to the number of columns,
+   * including id
+   * @param table valid table name
+   * @param dao valid DAO object
+   */
+  void writeToTable(String table, DAO dao) throws SQLException {
+    Timberland.cutInfo(TAG, "Writing this object to database:\n" + dao.toString());
+    List<String> data = dao.getDataToDatabase();
+    // Last one should be added separately.
+    String firstPart = data.stream().limit(data.size() - 1).reduce("", (s, o) -> s + ", " + "'" + o + "'");
 
-      Timberland.cutInfo(TAG, "Executing the statement " + statement);
+    String statement = "INSERT INTO " + table + " VALUES (" +
+        " DEFAULT " + // id
+        firstPart +
+        " ,'" + data.get(data.size() - 1)  +
+        "');";
+    exec(statement);
+  }
 
-      Timberland.cutInfo(TAG, "Executing the statement " + statement);
-      result = preparedStatement.executeQuery();
+  void writeToMachinesToPilotsTable(DAO dao, String table) throws SQLException {
+    List<String> data = dao.getDataToDatabase();
+    String statement = "INSERT INTO " + table + " VALUES (" +
+        data.get(0) + ", " + data.get(1) + ");";
+    exec(statement);
+  }
 
-      Timberland.cutInfo(TAG, "Got a ResultSet\n" + result);
-
-    } catch (SQLException sqle) {
-      Timberland.cutException(TAG, "Failed to read from " + table, sqle);
+  /**
+   * Method to update data in a table
+   * @param table valid table name
+   * @param dao valid dao object
+   * @param id correct id
+   * @param isPilot if table to update is machines_pilots provide isPilot to say what id is being used for WHERE
+   */
+  void updateTable(String table, DAO dao, String id, Boolean isPilot) throws SQLException {
+    Timberland.cutInfo(TAG, "Updating table " + table + " with\n" + dao.getDataToDatabase());
+    String statement = "UPDATE " + table + "\n" + "SET" + "\n";
+    switch (table) {
+      case "governments" -> updateGovernmentsTable(statement, dao, id);
+      case "pilots" -> updatePilotsTable(statement, dao, id);
+      case "machines" -> updateMachinesTable(statement, dao, id);
+      case "machines_pilots" -> {
+        if (isPilot) {
+          updateMachinesToPilotTableOnPilot(statement, dao, id);
+        } else {
+          updateMachinesToPilotTableOnMachine(statement, dao, id);
+        }
+      }
     }
-    return result;
   }
 
-  void writeToTable(String table, Entity entity) {
-    List<String> data = entity.getDataToDatabase();
+  void updateGovernmentsTable(String statement, DAO dao, String id) throws SQLException {
+    List<String> data = dao.getDataToDatabase();
+    String addition = "name = '" + data.get(0) + "',\n" +
+        "acronym = '"            + data.get(1) + "',\n" +
+        "capital = '"            + data.get(2) + "'\n" +
+        "WHERE id = " + id + ";";
+
+    exec(
+        statement + addition
+    );
+  }
+
+  void updatePilotsTable(String statement, DAO dao, String id) throws SQLException {
+    List<String> data = dao.getDataToDatabase();
+    String addition = "name = '" + data.get(0) + "',\n" +
+        "sex = '"                + data.get(1) + "',\n" +
+        "nationality = '"        + data.get(2) + "',\n" +
+        "government_id = "      + data.get(3) + "\n" +
+        "WHERE id = " + id + ";";
+
+    exec(
+        statement + addition
+    );
+  }
+
+  void updateMachinesTable(String statement, DAO dao, String id) throws SQLException {
+    List<String> data = dao.getDataToDatabase();
+    String addition = "name = '"     + data.get(0) + "',\n" +
+        "series = '"                 + data.get(1) + "',\n" +
+        "head_height = "            + data.get(2) + ",\n" +
+        "max_weight = "             + data.get(3) + ",\n" +
+        "power_source = '"           + data.get(4) + "',\n" +
+        "power_output = "           + data.get(5) + ",\n" +
+        "max_acceleration = "       + data.get(6) + ",\n" +
+        "government_id = "          + data.get(7) + "\n" +
+        "WHERE id = " + id + ";";
+
+    exec(
+        statement + addition
+    );
+  }
+
+  void updateMachinesToPilotTableOnMachine(String statement, DAO dao, String id) throws SQLException {
+    List<String> data = dao.getDataToDatabase();
+    String addition = "machine_id = " + data.get(0) + ",\n" +
+        "pilot_id = "                 + data.get(1) + "\n" +
+        "WHERE machine_id = " + id + ";";
+
+    exec(
+        statement + addition
+    );
+  }
+
+  void updateMachinesToPilotTableOnPilot(String statement, DAO dao, String id) throws SQLException {
+    List<String> data = dao.getDataToDatabase();
+    String addition = "machine_id = " + data.get(0) + ",\n" +
+        "pilot_id = "                 + data.get(1) + "\n" +
+        "WHERE pilot_id = " + id + ";";
+
+    exec(
+        statement + addition
+    );
+  }
+
+  /**
+   * Method to delete row or rows from a table
+   * @param table valid table name
+   * @param clause correct clause
+   * @return a result set
+   */
+  ResultSet deleteFromTable(String table, String clause) throws SQLException {
+    String statement = "DELETE FROM " + table + "\n" +
+        "WHERE " + clause + "\n" +
+        "RETURNING *;";
+    return execWithResult(statement);
   }
 
 
+  /**
+   * Method to execute a given statement, that produce a result (Example: SELECT).
+   * @param statement valid sql statement
+   * @return result set
+   */
+  ResultSet execWithResult(String statement) throws SQLException {
+    ResultSet resultSet = null;
+    resultSet = connection.prepareStatement(statement).executeQuery();
+    connection.prepareStatement(statement).close();
+
+    if (resultSet == null)
+      Timberland.cutInfo(TAG, "Empty result set! Statement:\n" + statement);
+
+    return resultSet;
+  }
+
+  /**
+   * Method to execute a given statement, that doesn't produce a result (Example INSERT INTO)
+   * @param statement valid sql statement
+   */
+  void exec(String statement) throws SQLException {
+    connection.prepareStatement(statement).execute();
+    connection.prepareStatement(statement).close();
+  }
 }

@@ -20,6 +20,7 @@ import java.nio.file.Path;
 final public class DatabaseAuth {
 
   private static final String TAG = "DatabaseAuth";
+  private static final String FILE = "database_config.json";
 
   /**
    * Method for converting json file to AuthObject
@@ -28,7 +29,8 @@ final public class DatabaseAuth {
    * @param file  path to configuration file
    * @return      AuthObject that is used by JDBC to handle connection to the database.
    */
-  public static AuthObject readAuthFile(Path file) {
+  public static AuthObject readAuthFile() {
+    Path file = Path.of(FILE);
     Gson gson = new Gson();
     AuthObject optionalAuthObject = null;
     try (Reader reader = new FileReader(file.toString(), StandardCharsets.UTF_8)) {

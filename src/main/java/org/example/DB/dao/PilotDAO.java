@@ -1,26 +1,26 @@
-package org.example.db;
+package org.example.db.dao;
 
 
 import java.util.List;
 
 /**
- * User <strong>Entity</strong> class.
+ * Pilot <strong>DAO</strong> class.
  * Is used for work with the Database.
  */
-public class Pilot extends Entity {
+public class PilotDAO extends DAO {
   private final String name;
   private final gender sex;
   private final String nationality;
-  private final Long govId;
+  private final String govId;
 
-  public Pilot(String name, gender sex, String nationality, Long govId) {
+  public PilotDAO(String name, gender sex, String nationality, String govId) {
     this.name = name;
     this.sex = sex;
     this.nationality = nationality;
     this.govId = govId;
   }
 
-  public Long getGovId() {
+  public String getGovId() {
     return govId;
   }
 
@@ -42,7 +42,7 @@ public class Pilot extends Entity {
         this.name,
         this.sex.name(),
         this.nationality,
-        this.govId.toString()
+        this.govId
     );
   }
 
@@ -52,7 +52,7 @@ public class Pilot extends Entity {
         this.name,
         this.sex.name(),
         this.nationality,
-        this.govId.toString()
+        this.govId
     );
   }
 }

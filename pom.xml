@@ -11,9 +11,15 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <junit.version>5.9.0</junit.version>
-        <surefire.plugin.version>3.0.0-M7</surefire.plugin.version>
+        <junit.version>5.10.2</junit.version>
+        <surefire.plugin.version>3.5.2</surefire.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <catalina.version>11.0.1</catalina.version>
+        <gson.version>2.11.0</gson.version>
+        <postgres.version>42.7.3</postgres.version>
+        <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
+        <testcontainers.version>1.19.8</testcontainers.version>
+        <mockito.version>5.14.2</mockito.version>
     </properties>
 
     <dependencies>
@@ -36,7 +42,7 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.11.0</version>
+            <version>${gson.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -44,16 +50,38 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.2</version> <!-- Use the latest version -->
+            <version>${postgres.version}</version> <!-- Use the latest version -->
         </dependency>
 
         <!-- Servlet dependencies -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.1.0</version>
+            <version>${jakarta.servlet.version}</version>
         </dependency>
 
+        <!-- Test containers dependencies -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Catalina/Tomcat dependencies -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>${catalina.version}</version>
+        </dependency>
+
+        <!-- Mockito dependencies -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -75,6 +103,9 @@
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
+                    <argLine>
+                        @{argLine}-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+                    </argLine>
                 </configuration>
             </plugin>
         </plugins>

@@ -5,37 +5,124 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.service.utilities.ServletUtils;
+import org.example.utils.DTOtoEntity;
+import org.example.bl.Entity;
+import org.example.bl.PilotEntity;
+import org.example.db.DatabaseWorker;
+import org.example.service.dto.PilotDTO;
+import org.example.utils.DatabaseAuth;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
- * Servlet for
+ * Servlet for Pilot
  */
-@WebServlet (name = "PilotServlet",urlPatterns = "/pilot")
+@WebServlet (name = "PilotServlet", urlPatterns = "/pilot")
 public class PilotServlet extends HttpServlet {
+
+  private static final String TAG = "PilotServlet";
+
+  private DatabaseWorker databaseWorker;
 
   @Override
   public void init() throws ServletException {
     super.init();
+    try {
+      databaseWorker = new DatabaseWorker(DatabaseAuth.readAuthFile());
+    } catch (SQLException sqle) {
+      throw new ServletException(sqle);
+    }
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    super.doGet(req, resp);
+    List<Entity> pilots;
+
+    try {
+      pilots = databaseWorker.readPilotsFromDB();
+    } catch (SQLException sqle) {
+      ServletUtils.errorInternalProblem(resp, TAG);
+      return;
+    }
+
+    List<PilotDTO> dtoList = pilots.stream()
+        .map(driver -> {
+          PilotEntity pilotEntity = (PilotEntity) driver;
+          return new PilotDTO(
+              pilotEntity.getName(),
+              pilotEntity.getGender(),
+              pilotEntity.getNationality(),
+              pilotEntity.getGovId()
+          );
+        }).toList();
+    resp.getWriter().write(dtoList.toString());
   }
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    super.doPost(req, resp);
+    String name = req.getParameter("name");
+    String gender = req.getParameter("gender");
+    String nationality = req.getParameter("nationality");
+
+    if (name == null || gender == null || nationality == null) {
+      ServletUtils.errorBadRequest(resp, "Provide full information!", TAG);
+      return;
+    }
+
+    PilotDTO pilot = new PilotDTO(name, gender, nationality, "");
+
+    try {
+      databaseWorker.writePilotToTable(DTOtoEntity.convert(pilot, "pilot"));
+      ServletUtils.okResponse(resp, TAG);
+    } catch (SQLException sqle) {
+      ServletUtils.errorInternalProblem(resp, TAG);
+    }
   }
 
   @Override
   protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    super.doPut(req, resp);
+
+    String name = req.getParameter("name");
+    String sex = req.getParameter("gender");
+    String nationality = req.getParameter("nationality");
+    String id = req.getParameter("id");
+
+    if (name == null || sex == null || nationality == null || id == null) {
+      ServletUtils.errorBadRequest(resp, "Provide full information!", TAG);
+      return;
+    }
+
+    PilotDTO pilot = new PilotDTO(name, sex, nationality, id);
+
+    try {
+      databaseWorker.updatePilotsTable(DTOtoEntity.convert(pilot, "pilot"), id);
+      ServletUtils.okResponse(resp, TAG);
+    } catch (SQLException sqle) {
+      ServletUtils.errorInternalProblem(resp, TAG);
+    }
   }
 
   @Override
   protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    super.doDelete(req, resp);
+    String id = req.getParameter("id");
+
+    try {
+      String result = databaseWorker.deleteFromPilotsTable("id = " + id);
+      if (result == null) {
+        resp.getWriter().write("Empty result!");
+        ServletUtils.okResponse(resp, TAG);
+      } else if (result.isEmpty()) {
+        resp.getWriter().write("No rows were affected!");
+        ServletUtils.okResponse(resp, TAG);
+      } else {
+        resp.getWriter().write("Rows were affected:\n" + result);
+        ServletUtils.okResponse(resp, TAG);
+      }
+    } catch (SQLException sqle) {
+      ServletUtils.errorInternalProblem(resp, TAG);
+    }
   }
 }
