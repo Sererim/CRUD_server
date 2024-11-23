@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     def warFile = 'target/CRUD_server-0.9-SNAPSHOT.war'
-                    def tomcatDir = "opt/tomcat/latest/webapps"
+                    def tomcatDir = "/opt/tomcat/latest/webapps"
                     sh "cp ${warFile} ${tomcatDir}"
                 }
             }
