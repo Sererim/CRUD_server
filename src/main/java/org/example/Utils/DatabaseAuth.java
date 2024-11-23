@@ -7,9 +7,7 @@ import com.google.gson.stream.JsonReader;
 import org.example.db.AuthObject;
 import org.example.timbering.Timberland;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
@@ -30,17 +28,16 @@ final public class DatabaseAuth {
    * @return      AuthObject that is used by JDBC to handle connection to the database.
    */
   public static AuthObject readAuthFile() {
-    Path file = Path.of(FILE);
     Gson gson = new Gson();
-    AuthObject optionalAuthObject = null;
-    try (Reader reader = new FileReader(file.toString(), StandardCharsets.UTF_8)) {
+    AuthObject authObject = null;
+    try(InputStream inputStream = DatabaseAuth.class.getClassLoader().getResourceAsStream(FILE)) {
+      assert inputStream != null;
+      Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8) ;
       JsonReader jsonReader = new JsonReader(reader);
-      optionalAuthObject = gson.fromJson(jsonReader, AuthObject.class);
-    } catch (JsonIOException | IOException ioex) {
-      Timberland.cutException(TAG, "Caused by reading database config file.", ioex);
-    } catch (JsonSyntaxException jse) {
-      Timberland.cutException(TAG, "Caused by incorrect json schema.", jse);
+      authObject = gson.fromJson(jsonReader, AuthObject.class);
+    } catch (JsonSyntaxException | JsonIOException | IOException | AssertionError exception) {
+      Timberland.cutDEAD(TAG, "Caused by\n" + exception, "Further work is impossible!");
     }
-    return optionalAuthObject;
+    return authObject;
   }
 }

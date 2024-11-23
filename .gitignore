@@ -42,7 +42,7 @@ build/
 audit.txt
 
 ### Config file ###
-database_config.json
+src/main/resources/database_config.json
 
 
 
