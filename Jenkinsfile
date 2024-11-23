@@ -19,9 +19,11 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                echo 'WIP'
-// Add deployment steps here, e.g., deploying to Tomcat
-// deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://your-tomcat-server:8080')], contextPath: '/', war: '**/*.war'
+                script {
+                    def warFile = 'CRUD_server-0.9-SNAPSHOT.war'
+                    def tomcatDir = "opt/tomcat/latest/webapps"
+                    sh "cp ${warFile} ${tomcatDir}"
+                }
             }
         }
     }
