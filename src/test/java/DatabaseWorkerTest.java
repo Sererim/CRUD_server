@@ -209,6 +209,16 @@ public class DatabaseWorkerTest {
           "20",
           "1"
       ));
+      databaseWorker.writePilotToTable(new PilotEntity(
+          "Test",
+          "M",
+          "Test",
+          "1"
+      ));
+      databaseWorker.writeToMachineToPilotTable(new MachineToPilotEntity(
+          "1",
+          "1"
+      ));
       List<Entity> machineToPilots = databaseWorker.readMachineToPilotFromDB();
       assertNotNull(machineToPilots);
       assertFalse(machineToPilots.isEmpty());
