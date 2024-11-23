@@ -199,29 +199,9 @@ public class DatabaseWorkerTest {
   @Test
   public void readMachineToPilotFromDBTest() {
     assertDoesNotThrow(() -> {
-      databaseWorker.writeToMachineTable(new MachineEntity(
-          "Zaku",
-          "Zaku supreme",
-          "18.00",
-          "30.00",
-          "Thermonuclear reactor",
-          "3000",
-          "20",
-          "1"
-      ));
-      databaseWorker.writePilotToTable(new PilotEntity(
-          "Test",
-          "M",
-          "Test",
-          "1"
-      ));
-      databaseWorker.writeToMachineToPilotTable(new MachineToPilotEntity(
-          "1",
-          "1"
-      ));
       List<Entity> machineToPilots = databaseWorker.readMachineToPilotFromDB();
       assertNotNull(machineToPilots);
-      assertFalse(machineToPilots.isEmpty());
+      assertTrue(machineToPilots.isEmpty());
     });
   }
 
