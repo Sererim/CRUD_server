@@ -7,6 +7,7 @@
     <groupId>org.example</groupId>
     <artifactId>CRUD_server</artifactId>
     <version>0.9-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -58,6 +59,7 @@
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>${jakarta.servlet.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Test containers dependencies -->
@@ -103,6 +105,14 @@
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
         </plugins>
