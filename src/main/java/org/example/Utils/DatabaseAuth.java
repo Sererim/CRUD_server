@@ -24,7 +24,6 @@ final public class DatabaseAuth {
    * Method for converting json file to AuthObject
    * that will be used in connection to the database
    *
-   * @param file  path to configuration file
    * @return      AuthObject that is used by JDBC to handle connection to the database.
    */
   public static AuthObject readAuthFile() {

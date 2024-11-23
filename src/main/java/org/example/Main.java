@@ -8,13 +8,13 @@ import java.io.File;
 public class Main {
 
   private static final String TAG   = "Main";
-  private static final Integer PORT = 8050;
+  private static final Integer PORT = 9099;
 
   public static void main(String... args) {
     try {
       startTomcat().getServer().await();
     } catch (LifecycleException le) {
-      Timberland.cutDEAD(TAG, "Couldn't start the server!", le.toString());
+      Timberland.cutDEAD(TAG, "Couldn't start the server!" + le, le.toString());
     }
   }
 
