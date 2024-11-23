@@ -41,8 +41,6 @@ build/
 ### Logging file ###
 audit.txt
 
-### Config file ###
-src/main/resources/database_config.json
 
 
 
