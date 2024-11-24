@@ -33,7 +33,7 @@ public class GovernmentServlet extends HttpServlet {
     try {
       databaseWorker = new DatabaseWorker(DatabaseAuth.readAuthFile());
     } catch (SQLException sqle) {
-      Timberland.cutDEAD(TAG, "Error on init()", "Couldn't establish a database connection!");
+      Timberland.cutDEAD(TAG, "Error on init()" + sqle, "Couldn't establish a database connection!");
       throw new ServletException("Couldn't start the database" + sqle);
     }
   }
