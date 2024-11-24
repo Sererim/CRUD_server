@@ -31,10 +31,11 @@ public class GovernmentServlet extends HttpServlet {
   public void init() throws ServletException {
     super.init();
     try {
+      Class.forName("org.postgresql.Driver");
       databaseWorker = new DatabaseWorker(DatabaseAuth.readAuthFile());
-    } catch (SQLException sqle) {
-      Timberland.cutException(TAG, "Error on init()" + sqle + "\nCouldn't establish a database connection!", sqle);
-      throw new ServletException("Couldn't start the database" + sqle);
+    } catch (Exception exception) {
+      Timberland.cutException(TAG, "Error on init()" + exception + "\nCouldn't establish a database connection!", exception);
+      throw new ServletException("Couldn't start the database" + exception);
     }
   }
 
