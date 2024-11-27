@@ -18,7 +18,7 @@ public class DatabaseWorkerTest {
   private static DatabaseWorker databaseWorker;
 
   @BeforeAll
-  static void beforeALl() throws SQLException {
+  static void beforeALl() throws SQLException, ClassNotFoundException {
     postgresContainer.start();
     AuthObject auth = new AuthObject(postgresContainer.getJdbcUrl(), postgresContainer.getUsername(), postgresContainer.getPassword());
     databaseWorker = new DatabaseWorker(auth);

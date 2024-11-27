@@ -25,7 +25,7 @@ public class DatabaseWorker {
 
   private final DatabaseManager db;
 
-  public DatabaseWorker(AuthObject authObject) throws SQLException {
+  public DatabaseWorker(AuthObject authObject) throws SQLException, ClassNotFoundException {
     db = new DatabaseManager(authObject);
   }
 

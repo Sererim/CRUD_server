@@ -22,7 +22,7 @@ public class Main {
     Tomcat tomcat = new Tomcat();
     tomcat.setPort(PORT);
     tomcat.getConnector();
-    tomcat.addWebapp("/", new File("/src/main/webapp").getAbsolutePath());
+    tomcat.addWebapp("", new File("/src/main/webapp").getAbsolutePath());
     tomcat.start();
     return tomcat;
   }

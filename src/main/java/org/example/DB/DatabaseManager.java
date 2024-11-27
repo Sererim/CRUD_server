@@ -22,7 +22,8 @@ public class DatabaseManager {
 
   private final Connection connection;
 
-  public DatabaseManager(AuthObject auth) throws SQLException {
+  public DatabaseManager(AuthObject auth) throws SQLException, ClassNotFoundException {
+    Class.forName("org.postgresql.Driver");
     connection = DriverManager.getConnection(auth.getUrl(), auth.getUsername(), auth.getPassword());
     setUpTables();
   }
