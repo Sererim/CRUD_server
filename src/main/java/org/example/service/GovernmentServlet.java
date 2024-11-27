@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Servlet for Government
  */
-@WebServlet (name = "GovernmentServlet", urlPatterns = "/government")
+@WebServlet (name = "GovernmentServlet", urlPatterns = "/government", value = "/government")
 public class GovernmentServlet extends HttpServlet {
 
   private DatabaseWorker databaseWorker;
@@ -41,6 +41,7 @@ public class GovernmentServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    Timberland.cutInfo(TAG, "Method GET was called");
     List<Entity> governments;
     try {
       governments = databaseWorker.readGovernmentsFromDB();
@@ -63,6 +64,7 @@ public class GovernmentServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    Timberland.cutInfo(TAG, "Method POST was called" + req);
     String name = req.getParameter("name");
     String acronym = req.getParameter("acronym");
     String capital = req.getParameter("capital");
@@ -84,6 +86,7 @@ public class GovernmentServlet extends HttpServlet {
 
   @Override
   protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    Timberland.cutInfo(TAG, "Method PUT was called" + req);
     String name = req.getParameter("name");
     String acronym = req.getParameter("acronym");
     String capital = req.getParameter("capital");
@@ -105,6 +108,7 @@ public class GovernmentServlet extends HttpServlet {
 
   @Override
   protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    Timberland.cutInfo(TAG, "Method DELETE was called" + req);
     String id = req.getParameter("id");
     try {
       String result = databaseWorker.deleteFromGovernmentsTable("id = " + id);
