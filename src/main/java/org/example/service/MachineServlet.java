@@ -32,8 +32,9 @@ public class MachineServlet extends HttpServlet {
   public void init() throws ServletException {
     super.init();
     try {
+      Class.forName("org.postgresql.Driver");
       databaseWorker = new DatabaseWorker(DatabaseAuth.readAuthFile());
-    } catch (SQLException sqle) {
+    } catch (Exception sqle) {
       throw new ServletException(sqle);
     }
   }

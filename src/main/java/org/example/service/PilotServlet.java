@@ -24,15 +24,15 @@ import java.util.List;
 public class PilotServlet extends HttpServlet {
 
   private static final String TAG = "PilotServlet";
-
   private DatabaseWorker databaseWorker;
 
   @Override
   public void init() throws ServletException {
     super.init();
     try {
+      Class.forName("org.postgresql.Driver");
       databaseWorker = new DatabaseWorker(DatabaseAuth.readAuthFile());
-    } catch (SQLException sqle) {
+    } catch (Exception sqle) {
       throw new ServletException(sqle);
     }
   }
