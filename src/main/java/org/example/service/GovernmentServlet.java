@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Servlet for Government
  */
-@WebServlet (name = "GovernmentServlet", urlPatterns = "/government", value = "/government")
+@WebServlet (name = "GovernmentServlet", value = "/government")
 public class GovernmentServlet extends HttpServlet {
 
   private DatabaseWorker databaseWorker;

@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Servlet for Pilot
  */
-@WebServlet (name = "PilotServlet", urlPatterns = "/pilot")
+@WebServlet (name = "PilotServlet", value = "/pilot")
 public class PilotServlet extends HttpServlet {
 
   private static final String TAG = "PilotServlet";

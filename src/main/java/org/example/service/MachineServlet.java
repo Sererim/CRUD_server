@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * Servlet for
  */
-@WebServlet (name = "MachineServlet", urlPatterns = "/machine")
+@WebServlet (name = "MachineServlet", value = "/machine")
 public class MachineServlet extends HttpServlet {
 
   private static final String TAG = "MachineServlet";
