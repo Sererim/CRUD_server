@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>CRUD_server</artifactId>
-    <version>0.9-SNAPSHOT</version>
+    <artifactId>Server</artifactId>
+    <version>0.9.8</version>
     <packaging>war</packaging>
 
     <properties>
