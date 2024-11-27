@@ -20,7 +20,7 @@ pipeline {
         stage('deploy') {
             steps {
                 script {
-                    def warFile = 'target/CRUD_server-0.9-SNAPSHOT.war'
+                    def warFile = 'target/Server-0.9.8.war'
                     def tomcatDir = "/opt/tomcat/latest/webapps"
                     sh "sudo cp ${warFile} ${tomcatDir}"
                 }
