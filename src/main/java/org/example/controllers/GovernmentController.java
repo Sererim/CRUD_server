@@ -1,11 +1,11 @@
-package org.example.service;
+package org.example.controllers;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.service.utilities.ServletUtils;
+import org.example.service.utils.ServletUtils;
 import org.example.timbering.Timberland;
 import org.example.utils.DTOtoEntity;
 import org.example.bl.Entity;
@@ -21,11 +21,11 @@ import java.util.List;
 /**
  * Servlet for Government
  */
-@WebServlet (name = "GovernmentServlet", value = "/government")
-public class GovernmentServlet extends HttpServlet {
+@WebServlet (name = "GovernmentController", value = "/government")
+public class GovernmentController extends HttpServlet {
 
   private DatabaseWorker databaseWorker;
-  private final static String TAG = "GovernmentServlet";
+  private final static String TAG = "GovernmentController";
 
   @Override
   public void init() throws ServletException {
@@ -39,7 +39,7 @@ public class GovernmentServlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     Timberland.cutInfo(TAG, "Method GET was called");
     List<Entity> governments;
     try {
@@ -62,7 +62,7 @@ public class GovernmentServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     Timberland.cutInfo(TAG, "Method POST was called" + req);
     String name = req.getParameter("name");
     String acronym = req.getParameter("acronym");
@@ -84,7 +84,7 @@ public class GovernmentServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     Timberland.cutInfo(TAG, "Method PUT was called" + req);
     String name = req.getParameter("name");
     String acronym = req.getParameter("acronym");
@@ -106,7 +106,7 @@ public class GovernmentServlet extends HttpServlet {
   }
 
   @Override
-  protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     Timberland.cutInfo(TAG, "Method DELETE was called" + req);
     String id = req.getParameter("id");
     try {

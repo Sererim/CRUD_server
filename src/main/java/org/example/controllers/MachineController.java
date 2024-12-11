@@ -1,11 +1,11 @@
-package org.example.service;
+package org.example.controllers;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.service.utilities.ServletUtils;
+import org.example.service.utils.ServletUtils;
 import org.example.utils.DTOtoEntity;
 import org.example.bl.Entity;
 import org.example.bl.MachineEntity;
@@ -16,15 +16,14 @@ import org.example.utils.DatabaseAuth;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Servlet for
  */
-@WebServlet (name = "MachineServlet", value = "/machine")
-public class MachineServlet extends HttpServlet {
+@WebServlet (name = "MachineController", value = "/machine")
+public class MachineController extends HttpServlet {
 
-  private static final String TAG = "MachineServlet";
+  private static final String TAG = "MachineController";
 
   private DatabaseWorker databaseWorker;
 
@@ -40,7 +39,7 @@ public class MachineServlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     List<Entity> machines;
     try {
       machines = databaseWorker.readMachinesFromDB();
@@ -66,7 +65,7 @@ public class MachineServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
     String name = req.getParameter("name");
     String series = req.getParameter("series");
@@ -101,7 +100,7 @@ public class MachineServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     String name = req.getParameter("name");
     String series = req.getParameter("series");
     String headHeight = req.getParameter("headHeight");
@@ -137,7 +136,7 @@ public class MachineServlet extends HttpServlet {
   }
 
   @Override
-  protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     String id = req.getParameter("id");
 
     if (id == null) {

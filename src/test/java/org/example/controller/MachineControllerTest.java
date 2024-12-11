@@ -1,12 +1,11 @@
-package org.example.service;
+package org.example.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.bl.Entity;
-import org.example.bl.GovernmentEntity;
 import org.example.bl.MachineEntity;
+import org.example.controllers.MachineController;
 import org.example.db.DatabaseWorker;
-import org.example.service.MachineServlet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,10 +22,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class MachineServletTest {
+class MachineControllerTest {
 
   @InjectMocks
-  private MachineServlet machineServlet;
+  private MachineController machineController;
 
   @Mock
   private DatabaseWorker databaseWorker;
@@ -63,7 +62,7 @@ class MachineServletTest {
 
     when(databaseWorker.readGovernmentsFromDB()).thenReturn(machines);
 
-    machineServlet.doGet(request, response);
+    machineController.doGet(request, response);
 
     verify(response).getWriter();
 
@@ -91,7 +90,7 @@ class MachineServletTest {
 
     when(databaseWorker.readGovernmentsFromDB()).thenReturn(machines);
 
-    machineServlet.doGet(request, response);
+    machineController.doGet(request, response);
 
     verify(response).getWriter();
 
@@ -109,7 +108,7 @@ class MachineServletTest {
     when(request.getParameter("powerOutput")).thenReturn("500");
     when(request.getParameter("maxAcceleration")).thenReturn("10");
 
-    machineServlet.doPost(request, response);
+    machineController.doPost(request, response);
 
     verify(databaseWorker).writeToMachineTable(any(Entity.class));
     verify(response).setStatus(HttpServletResponse.SC_OK);
@@ -125,7 +124,7 @@ class MachineServletTest {
     when(request.getParameter("powerOutput")).thenReturn(null);
     when(request.getParameter("maxAcceleration")).thenReturn(null);
 
-    machineServlet.doPost(request, response);
+    machineController.doPost(request, response);
 
     ArgumentCaptor<Integer> statusCaptor = ArgumentCaptor.forClass(Integer.class);
     verify(response).setStatus(statusCaptor.capture());
@@ -139,7 +138,7 @@ class MachineServletTest {
     when(request.getParameter("series")).thenReturn(null);
     when(request.getParameter("headHeight")).thenReturn(null);
 
-    machineServlet.doPost(request, response);
+    machineController.doPost(request, response);
 
     ArgumentCaptor<Integer> statusCaptor = ArgumentCaptor.forClass(Integer.class);
     verify(response).setStatus(statusCaptor.capture());
@@ -158,7 +157,7 @@ class MachineServletTest {
     when(request.getParameter("maxAcceleration")).thenReturn("10");
     when(request.getParameter("id")).thenReturn("1");
 
-    machineServlet.doPut(request, response);
+    machineController.doPut(request, response);
 
     verify(databaseWorker).updateMachinesTable(any(Entity.class), eq("1"));
     verify(response).setStatus(HttpServletResponse.SC_OK);
@@ -169,7 +168,7 @@ class MachineServletTest {
     when(request.getParameter("name")).thenReturn("TestMachine");
     when(request.getParameter("id")).thenReturn("1");
 
-    machineServlet.doPut(request, response);
+    machineController.doPut(request, response);
 
     ArgumentCaptor<Integer> statusCaptor = ArgumentCaptor.forClass(Integer.class);
     verify(response).setStatus(statusCaptor.capture());
@@ -179,7 +178,7 @@ class MachineServletTest {
 
   @Test
   void doPutEmptyTest() throws Exception {
-    machineServlet.doPut(request, response);
+    machineController.doPut(request, response);
 
     ArgumentCaptor<Integer> statusCaptor = ArgumentCaptor.forClass(Integer.class);
     verify(response).setStatus(statusCaptor.capture());
@@ -191,7 +190,7 @@ class MachineServletTest {
   void doDeleteTest() throws Exception {
     when(request.getParameter("id")).thenReturn("1");
 
-    machineServlet.doDelete(request, response);
+    machineController.doDelete(request, response);
 
     assertNull(databaseWorker.deleteFromMachinesTable("id = 1"));
     verify(response).setStatus(HttpServletResponse.SC_OK);

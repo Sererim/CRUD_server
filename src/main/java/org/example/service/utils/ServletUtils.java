@@ -1,4 +1,4 @@
-package org.example.service.utilities;
+package org.example.service.utils;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.timbering.Timberland;

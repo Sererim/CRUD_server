@@ -1,11 +1,11 @@
-package org.example.service;
+package org.example.controllers;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.service.utilities.ServletUtils;
+import org.example.service.utils.ServletUtils;
 import org.example.utils.DTOtoEntity;
 import org.example.bl.Entity;
 import org.example.bl.PilotEntity;
@@ -20,10 +20,10 @@ import java.util.List;
 /**
  * Servlet for Pilot
  */
-@WebServlet (name = "PilotServlet", value = "/pilot")
-public class PilotServlet extends HttpServlet {
+@WebServlet (name = "PilotController", value = "/pilot")
+public class PilotController extends HttpServlet {
 
-  private static final String TAG = "PilotServlet";
+  private static final String TAG = "PilotController";
   private DatabaseWorker databaseWorker;
 
   @Override
@@ -38,7 +38,7 @@ public class PilotServlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     List<Entity> pilots;
 
     try {
@@ -62,7 +62,7 @@ public class PilotServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     String name = req.getParameter("name");
     String gender = req.getParameter("gender");
     String nationality = req.getParameter("nationality");
@@ -83,7 +83,7 @@ public class PilotServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  public void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
     String name = req.getParameter("name");
     String sex = req.getParameter("gender");
@@ -106,7 +106,7 @@ public class PilotServlet extends HttpServlet {
   }
 
   @Override
-  protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+  public void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     String id = req.getParameter("id");
 
     try {
