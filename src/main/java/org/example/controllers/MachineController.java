@@ -5,12 +5,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.service.utils.ServletUtils;
+import org.example.utils.ServletUtils;
 import org.example.utils.DTOtoEntity;
 import org.example.bl.Entity;
 import org.example.bl.MachineEntity;
 import org.example.db.DatabaseWorker;
-import org.example.service.dto.MachineDTO;
+import org.example.service.MachineDTO;
 import org.example.utils.DatabaseAuth;
 
 import java.io.IOException;
